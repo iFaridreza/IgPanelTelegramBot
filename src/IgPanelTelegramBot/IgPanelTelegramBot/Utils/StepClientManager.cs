@@ -92,7 +92,7 @@ internal static class StepClientManager
 
         StepClient? stepClientFirst = stepClients.FirstOrDefault(x => x.UserId == userId);
 
-        string timeExpier = DateTime.Now.AddMinutes(_appSettings.TimeOutMinute).ToString("HH:MM:ss");
+        string timeExpier = DateTime.Now.AddMinutes(_appSettings.TimeOutMinute).ToString("HH:mm:ss");
 
         if (stepClientFirst is null)
         {

@@ -12,6 +12,7 @@ internal sealed class TelegramBotApi
     private readonly ILogger _logger;
     private readonly AppSettings _appSettings;
     private readonly TelegramServices _telegramServices;
+    private readonly InstagramServices _instagramServices;
     private readonly SSM _ssm;
 
     internal TelegramBotApi(TelegramBotClient telegramBotClient, ILogger logger, AppSettings appSettings, SSM ssm)
@@ -20,6 +21,7 @@ internal sealed class TelegramBotApi
         _logger = logger;
         _appSettings = appSettings;
         _telegramServices = appSettings.TelegramServices;
+        _instagramServices = appSettings.InstagramServices;
         _ssm = ssm;
     }
 
@@ -176,6 +178,118 @@ internal sealed class TelegramBotApi
 
                 await _telegramBotClient.SendMessage(userId, string.Format(Text._servicesDetails, servicesInfo.Title, serviceDetails.Price, serviceDetails.MinOrder, serviceDetails.MaxOrder), replyMarkup: Keyboard.BackHome());
             }
+            else if (data.Contains("instagram_view_story_"))
+            {
+                string serviceId = data.Replace("instagram_view_story_", string.Empty).Trim();
+
+                ServiceDetails? servicesInfo = _appSettings.InstagramServices.ViewsStory.FirstOrDefault(x => x.Id == serviceId);
+
+                if (servicesInfo is null)
+                {
+                    return;
+                }
+
+                Service? serviceDetails = await _ssm.GetServiceAsync(serviceId);
+
+                if (serviceDetails is null)
+                {
+                    return;
+                }
+
+                await StepClientManager.UpdateOrCreate(userId, "get_link");
+
+                UserSession userSession = new(servicesInfo.Id);
+
+                UserSession.UpdateOrCreate(userId, userSession);
+
+                await _telegramBotClient.DeleteMessage(userId, messageId);
+
+                await _telegramBotClient.SendMessage(userId, string.Format(Text._servicesDetails, servicesInfo.Title, serviceDetails.Price, serviceDetails.MinOrder, serviceDetails.MaxOrder), replyMarkup: Keyboard.BackHome());
+            }
+            else if (data.Contains("instagram_view_video_"))
+            {
+                string serviceId = data.Replace("instagram_view_video_", string.Empty).Trim();
+
+                ServiceDetails? servicesInfo = _appSettings.InstagramServices.ViewsVideo.FirstOrDefault(x => x.Id == serviceId);
+
+                if (servicesInfo is null)
+                {
+                    return;
+                }
+
+                Service? serviceDetails = await _ssm.GetServiceAsync(serviceId);
+
+                if (serviceDetails is null)
+                {
+                    return;
+                }
+
+                await StepClientManager.UpdateOrCreate(userId, "get_link");
+
+                UserSession userSession = new(servicesInfo.Id);
+
+                UserSession.UpdateOrCreate(userId, userSession);
+
+                await _telegramBotClient.DeleteMessage(userId, messageId);
+
+                await _telegramBotClient.SendMessage(userId, string.Format(Text._servicesDetails, servicesInfo.Title, serviceDetails.Price, serviceDetails.MinOrder, serviceDetails.MaxOrder), replyMarkup: Keyboard.BackHome());
+            }
+            else if (data.Contains("instagram_like_"))
+            {
+                string serviceId = data.Replace("instagram_like_", string.Empty).Trim();
+
+                ServiceDetails? servicesInfo = _appSettings.InstagramServices.Likes.FirstOrDefault(x => x.Id == serviceId);
+
+                if (servicesInfo is null)
+                {
+                    return;
+                }
+
+                Service? serviceDetails = await _ssm.GetServiceAsync(serviceId);
+
+                if (serviceDetails is null)
+                {
+                    return;
+                }
+
+                await StepClientManager.UpdateOrCreate(userId, "get_link");
+
+                UserSession userSession = new(servicesInfo.Id);
+
+                UserSession.UpdateOrCreate(userId, userSession);
+
+                await _telegramBotClient.DeleteMessage(userId, messageId);
+
+                await _telegramBotClient.SendMessage(userId, string.Format(Text._servicesDetails, servicesInfo.Title, serviceDetails.Price, serviceDetails.MinOrder, serviceDetails.MaxOrder), replyMarkup: Keyboard.BackHome());
+            }
+            else if (data.Contains("instagram_followers_"))
+            {
+                string serviceId = data.Replace("instagram_followers_", string.Empty).Trim();
+
+                ServiceDetails? servicesInfo = _appSettings.InstagramServices.Followers.FirstOrDefault(x => x.Id == serviceId);
+
+                if (servicesInfo is null)
+                {
+                    return;
+                }
+
+                Service? serviceDetails = await _ssm.GetServiceAsync(serviceId);
+
+                if (serviceDetails is null)
+                {
+                    return;
+                }
+
+                await StepClientManager.UpdateOrCreate(userId, "get_link");
+
+                UserSession userSession = new(servicesInfo.Id);
+
+                UserSession.UpdateOrCreate(userId, userSession);
+
+                await _telegramBotClient.DeleteMessage(userId, messageId);
+
+                await _telegramBotClient.SendMessage(userId, string.Format(Text._servicesDetails, servicesInfo.Title, serviceDetails.Price, serviceDetails.MinOrder, serviceDetails.MaxOrder), replyMarkup: Keyboard.BackHome());
+            }
         }
         catch (Exception ex)
         {
@@ -193,7 +307,6 @@ internal sealed class TelegramBotApi
             {
                 return;
             }
-
 
             switch (message.Text)
             {
@@ -219,7 +332,31 @@ internal sealed class TelegramBotApi
                     break;
                 case "خدمات اینستاگرام📍":
                     {
-                        await _telegramBotClient.SendMessage(userId, "این بخش در دست بروزرسانی - ریلود میباشد❤️", replyMarkup: Keyboard.Home());
+                        await _telegramBotClient.SendMessage(userId, Text._telegramServices, replyMarkup: Keyboard.InstagramServices());
+                    }
+                    break;
+                case "لایک👍":
+                    {
+                        var services = await _ssm.GetAllServicesAsync();
+                        await _telegramBotClient.SendMessage(userId, string.Format(Text._instagramServicesDetails, "لایک"), replyMarkup: Keyboard.InstagramLikes(_instagramServices, services ?? throw new NullReferenceException(nameof(services))));
+                    }
+                    break;
+                case "فالور✨":
+                    {
+                        var services = await _ssm.GetAllServicesAsync();
+                        await _telegramBotClient.SendMessage(userId, string.Format(Text._instagramServicesDetails, "فالور"), replyMarkup: Keyboard.InstagramFollowers(_instagramServices, services ?? throw new NullReferenceException(nameof(services))));
+                    }
+                    break; 
+                case "ویو استوری👁‍🗨":
+                    {
+                        var services = await _ssm.GetAllServicesAsync();
+                        await _telegramBotClient.SendMessage(userId, string.Format(Text._instagramServicesDetails, "ویو استوری"), replyMarkup: Keyboard.InstagramViewStorys(_instagramServices, services ?? throw new NullReferenceException(nameof(services))));
+                    }
+                    break; 
+                case "ویو ویدیو👁‍🗨":
+                    {
+                        var services = await _ssm.GetAllServicesAsync();
+                        await _telegramBotClient.SendMessage(userId, string.Format(Text._instagramServicesDetails, "ویو ویدیو"), replyMarkup: Keyboard.InstagramViewVideos(_instagramServices, services ?? throw new NullReferenceException(nameof(services))));
                     }
                     break;
                 case "ویو👁‍🗨":
@@ -272,7 +409,7 @@ internal sealed class TelegramBotApi
                                 break;
                             case "get_count":
                                 {
-                                    if (!long.TryParse(message.Text, out _))
+                                    if (!long.TryParse(message.Text, out long count))
                                     {
                                         await _telegramBotClient.SendMessage(userId, Text._invalidInput, replyMarkup: Keyboard.BackHome());
                                         return;
@@ -283,6 +420,15 @@ internal sealed class TelegramBotApi
                                     DetailsOrder? detailsOrder = await _ssm.CreateOrder(userSession.ServiceId, userSession.Link, message.Text);
 
                                     await _telegramBotClient.DeleteMessage(userId, msgWite.MessageId);
+
+                                    Service? serviceDetails = await _ssm.GetServiceAsync(userSession.ServiceId);
+
+                                    if (serviceDetails is null)
+                                    {
+                                        return;
+                                    }
+ 
+                                    _logger.Information($"User {userId} - {message.Chat.FirstName} Create Order:\n\nId : {userSession.ServiceId}\nCount : {count}\nPrice : {serviceDetails.Price} $");
 
                                     await StepClientManager.Remove(userId);
                                     UserSession.Remove(userId);
@@ -297,7 +443,6 @@ internal sealed class TelegramBotApi
 
                                     await _telegramBotClient.SendMessage(userId, Text._sucsessOrder, replyMarkup: Keyboard.StatusOrder(detailsOrder.OrderId));
                                     await _telegramBotClient.SendMessage(userId, Text._heart, replyMarkup: Keyboard.Home());
-
                                 }
                                 break;
                             default: break;

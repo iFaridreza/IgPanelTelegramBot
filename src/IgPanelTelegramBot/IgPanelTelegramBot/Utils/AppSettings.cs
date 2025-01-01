@@ -11,4 +11,5 @@ internal sealed class AppSettings
     public long[] Sudos { get; set; } = [];
     public int TimeOutMinute { get; set; }
     public TelegramServices TelegramServices { get; set; } = new();
+    public InstagramServices InstagramServices { get; set; } = new();
 }

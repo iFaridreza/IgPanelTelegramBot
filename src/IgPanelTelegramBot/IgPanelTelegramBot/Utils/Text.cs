@@ -3,7 +3,9 @@ internal static class Text
 {
     internal static string _start = "سلام خوش آمدید به پنل آراد❤️\nبرای استفاده از خدمات از دکمه های زیر استفاده کنید⬇️";
     internal static string _telegramServicesDetails = "خدمات {0} تلگرام به شرح زیر میباشد⬇️";
+    internal static string _instagramServicesDetails = "خدمات {0} اینستاگرام به شرح زیر میباشد⬇️";
     internal static string _telegramServices = "خدمات تلگرام به شرح زیر میباشد⬇️";
+    internal static string _instagramServices = "خدمات اینستاگرام به شرح زیر میباشد⬇️";
     internal static string _backHome = "عملیات کنسل و به خانه بازگشتید🏘";
     internal static string _alert = "این دکمه فقط جهت نمایش میباشد⚠️";
     internal static string _orderStatusPanding = "وضعیت سفارش شما در حال انجام است❤️";

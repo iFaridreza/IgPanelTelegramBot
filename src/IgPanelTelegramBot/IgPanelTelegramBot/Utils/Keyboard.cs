@@ -20,6 +20,14 @@ internal static class Keyboard
         return replyKeyboardMarkup;
     }
 
+    internal static ReplyKeyboardMarkup InstagramServices()
+    {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new();
+        replyKeyboardMarkup.AddButtons(["فالور✨", "لایک👍"]).AddNewRow().AddButtons(["ویو استوری👁‍🗨", "ویو ویدیو👁‍🗨"]).AddNewRow().AddButton("بازگشت⬅️");
+        replyKeyboardMarkup.ResizeKeyboard = true;
+        return replyKeyboardMarkup;
+    }
+
     internal static InlineKeyboardMarkup BackHomeInline()
     {
         InlineKeyboardMarkup replyKeyboardMarkup = new();
@@ -104,6 +112,90 @@ internal static class Keyboard
             }
 
             replyKeyboardMarkup.AddButton(service.Price, "alert").AddButton(item.Title, $"telegram_reaction_{item.Id}").AddNewRow();
+        }
+
+        return replyKeyboardMarkup;
+    }
+
+    internal static InlineKeyboardMarkup InstagramViewStorys(InstagramServices instagramServices, IEnumerable<Service> services)
+    {
+        InlineKeyboardMarkup replyKeyboardMarkup = new();
+
+        replyKeyboardMarkup.AddButton("💲", "alert").AddButton("ℹ️", "alert").AddNewRow();
+
+        foreach (var item in instagramServices.ViewsStory)
+        {
+            var service = services.FirstOrDefault(x => x.Id == item.Id);
+
+            if (service is null)
+            {
+                continue;
+            }
+
+            replyKeyboardMarkup.AddButton(service.Price, "alert").AddButton(item.Title, $"instagram_view_story_{item.Id}").AddNewRow();
+        }
+
+        return replyKeyboardMarkup;
+    }
+
+    internal static InlineKeyboardMarkup InstagramViewVideos(InstagramServices instagramServices, IEnumerable<Service> services)
+    {
+        InlineKeyboardMarkup replyKeyboardMarkup = new();
+
+        replyKeyboardMarkup.AddButton("💲", "alert").AddButton("ℹ️", "alert").AddNewRow();
+
+        foreach (var item in instagramServices.ViewsVideo)
+        {
+            var service = services.FirstOrDefault(x => x.Id == item.Id);
+
+            if (service is null)
+            {
+                continue;
+            }
+
+            replyKeyboardMarkup.AddButton(service.Price, "alert").AddButton(item.Title, $"instagram_view_video_{item.Id}").AddNewRow();
+        }
+
+        return replyKeyboardMarkup;
+    }
+
+    internal static InlineKeyboardMarkup InstagramLikes(InstagramServices instagramServices, IEnumerable<Service> services)
+    {
+        InlineKeyboardMarkup replyKeyboardMarkup = new();
+
+        replyKeyboardMarkup.AddButton("💲", "alert").AddButton("ℹ️", "alert").AddNewRow();
+
+        foreach (var item in instagramServices.Likes)
+        {
+            var service = services.FirstOrDefault(x => x.Id == item.Id);
+
+            if (service is null)
+            {
+                continue;
+            }
+
+            replyKeyboardMarkup.AddButton(service.Price, "alert").AddButton(item.Title, $"instagram_like_{item.Id}").AddNewRow();
+        }
+
+        return replyKeyboardMarkup;
+    }
+
+    internal static InlineKeyboardMarkup InstagramFollowers(InstagramServices instagramServices, IEnumerable<Service> services)
+    {
+        InlineKeyboardMarkup replyKeyboardMarkup = new();
+
+        replyKeyboardMarkup.AddButton("💲", "alert").AddButton("ℹ️", "alert").AddNewRow();
+
+        foreach (var item in instagramServices.Followers)
+        {
+            var service = services.FirstOrDefault(x => x.Id == item.Id);
+
+            if (service is null)
+            {
+                continue;
+            }
+
+            replyKeyboardMarkup.AddButton(service.Price, "alert").AddButton(item.Title, $"instagram_followers_{item.Id}").AddNewRow();
         }
 
         return replyKeyboardMarkup;
